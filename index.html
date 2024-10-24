@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Runner</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #000; color: white; overflow: hidden; }
+        canvas { display: block; margin: 0 auto; background: #222; }
+        #game-over { text-align: center; font-size: 24px; margin-top: 20px; display: none; }
+        #retry { text-align: center; font-size: 20px; margin-top: 20px; cursor: pointer; display: none; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="game-over">Game Over</div>
+    <div id="retry">Retry</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
