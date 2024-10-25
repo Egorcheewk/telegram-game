@@ -93,6 +93,7 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+// Handle jumping
 document.addEventListener("keydown", (e) => {
     if (e.code === "Space" && !player.isJumping) {
         player.isJumping = true;
@@ -111,4 +112,11 @@ document.getElementById("retry").addEventListener("click", () => {
     gameLoop();
 });
 
-gameLoop();
+// Auto-start the game in Telegram Web App
+if (window.Telegram && window.Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    gameLoop();
+} else {
+    // Run game loop in a regular browser environment
+    gameLoop();
+}
