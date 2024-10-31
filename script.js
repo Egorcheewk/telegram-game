@@ -93,9 +93,17 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Handle jumping
+// Handle jumping for keyboard
 document.addEventListener("keydown", (e) => {
     if (e.code === "Space" && !player.isJumping) {
+        player.isJumping = true;
+        player.speedY = player.jumpStrength;
+    }
+});
+
+// Handle jumping for mobile devices
+canvas.addEventListener("touchstart", () => {
+    if (!player.isJumping) {
         player.isJumping = true;
         player.speedY = player.jumpStrength;
     }
