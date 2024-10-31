@@ -1,23 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="telegram:widgets" content="app"> <!-- Добавлен мета-тег для Telegram Web App -->
-    <title>Infinity Runner</title>
-    <style>
-        * { margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #000; color: white; }
-        canvas { display: block; margin: 0 auto; background: #222; }
-        #game-over { text-align: center; font-size: 24px; margin-top: 20px; display: none; }
-        #retry { text-align: center; font-size: 20px; margin-top: 20px; cursor: pointer; display: none; }
-    </style>
-</head>
-<body>
-    <canvas id="gameCanvas"></canvas>
-    <div id="game-over">Game Over</div>
-    <div id="retry">Retry</div>
+from aiogram import Bot, Dispatcher, executor, types
+import logging
 
-    <script src="script.js"></script>
-</body>
-</html>
+# Настройка логирования для подробного вывода информации
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Инициализация бота с вашим токеном
+bot = Bot(token="7887472066:AAFys21mH_m1__P29Hfpo95YN3EpVl8MEzc")
+dp = Dispatcher(bot)
+
+# Логируем успешную инициализацию бота
+logger.info("Бот успешно инициализирован")
+
+@dp.message_handler(commands=['start'])
+async def start(message: types.Message):
+    # Логирование получения команды /start
+    logger.info("Команда /start получена от пользователя %s", message.from_user.id)
+
+    # Подтверждение выполнения команды и отправка кнопки с Web App
+    await message.answer("Команда /start принята. Запускаю игру...")
+    await message.answer(
+        "Нажмите кнопку ниже, чтобы запустить игру:",
+        reply_markup=types.InlineKeyboardMarkup().add(
+            types.InlineKeyboardButton(
+                "Играть",
+                web_app=types.WebAppInfo(url="https://telegram-game-two.vercel.app/")
+            )
+        )
+    )
+
+if __name__ == "__main__":
+    # Логирование успешного запуска бота
+    logger.info("Бот запущен и готов принимать команды")
+    executor.start_polling(dp, skip_updates=True)
