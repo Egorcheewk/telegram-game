@@ -1,8 +1,11 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const startButton = document.getElementById("start-button");
+const menu = document.getElementById("menu");
+const backToMainMenu = document.getElementById("back-to-main-menu");
 
-canvas.width = 480;
-canvas.height = 320;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 let player = {
     x: 50,
@@ -52,12 +55,7 @@ function drawObstacles() {
         obstacle.x -= gameSpeed;
         ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
 
-        // Remove obstacle when it goes off-screen
-        if (obstacle.x + obstacle.width < 0) {
-            obstacles.splice(index, 1);
-        }
-
-        // Check for collision
+        // Проверка на столкновение
         if (
             player.x < obstacle.x + obstacle.width &&
             player.x + player.width > obstacle.x &&
@@ -73,6 +71,26 @@ function gameOver() {
     isGameOver = true;
     document.getElementById("game-over").style.display = "block";
     document.getElementById("retry").style.display = "block";
+    document.getElementById("back-to-main-menu").style.display = "block";
+}
+
+function showMenu() {
+    menu.style.display = "block";
+    canvas.style.display = "none";
+}
+
+function startGame() {
+    menu.style.display = "none";
+    canvas.style.display = "block";
+    document.getElementById("game-over").style.display = "none";
+    document.getElementById("retry").style.display = "none";
+    document.getElementById("back-to-main-menu").style.display = "none";
+    isGameOver = false;
+    player.y = canvas.height - player.height;
+    player.isJumping = false;
+    obstacles = [];
+    frameCount = 0;
+    gameLoop();
 }
 
 function gameLoop() {
@@ -93,7 +111,16 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Handle jumping for keyboard
+// Событие нажатия на кнопку "Start"
+startButton.addEventListener("click", startGame);
+
+// Событие нажатия на кнопку "Retry"
+document.getElementById("retry").addEventListener("click", startGame);
+
+// Событие нажатия на кнопку "Back to Main Menu"
+backToMainMenu.addEventListener("click", showMenu);
+
+// Обработка нажатия на пробел для прыжка
 document.addEventListener("keydown", (e) => {
     if (e.code === "Space" && !player.isJumping) {
         player.isJumping = true;
@@ -101,7 +128,7 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// Handle jumping for mobile devices
+// Обработка для мобильных устройств
 canvas.addEventListener("touchstart", () => {
     if (!player.isJumping) {
         player.isJumping = true;
@@ -109,22 +136,11 @@ canvas.addEventListener("touchstart", () => {
     }
 });
 
-document.getElementById("retry").addEventListener("click", () => {
-    isGameOver = false;
-    player.y = canvas.height - player.height;
-    player.isJumping = false;
-    obstacles = [];
-    frameCount = 0;
-    document.getElementById("game-over").style.display = "none";
-    document.getElementById("retry").style.display = "none";
-    gameLoop();
-});
-
-// Auto-start the game in Telegram Web App
+// Автоматический запуск игры в Телеграме
 if (window.Telegram && window.Telegram.WebApp) {
     Telegram.WebApp.ready();
-    gameLoop();
+    showMenu();
 } else {
-    // Run game loop in a regular browser environment
-    gameLoop();
+    // Запуск меню в обычном браузере
+    showMenu();
 }
