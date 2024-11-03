@@ -57,6 +57,10 @@ const character = {
     slideDistance: 100 // Расстояние скольжения
 };
 
+// Переменные для обработки свайпов
+let touchStartX = 0;
+let touchEndX = 0;
+
 // Функция для отображения кадра персонажа
 function drawPlayer() {
     frameCounter++;
@@ -64,12 +68,12 @@ function drawPlayer() {
 
     // Определяем, какую анимацию использовать
     if (character.isSlidingLeft) {
-        currentFrames = slideRightFrames; // Используем кадры вправо для отражения
+        currentFrames = slideRightFrames;
         ctx.save();
-        ctx.scale(-1, 1); // Отражаем изображение по горизонтали
+        ctx.scale(-1, 1);
         ctx.drawImage(
             currentFrames[frameIndex],
-            -character.x - character.width, // Инвертируем x-позицию для отражения
+            -character.x - character.width,
             character.y,
             character.width,
             character.height
@@ -188,22 +192,37 @@ Promise.all([...runFrames, ...jumpFrames, ...slideRightFrames].map(img => new Pr
         console.error("Ошибка загрузки кадров");
     });
 
-// Управление с клавиатуры
-document.addEventListener("keydown", (e) => {
-    if (e.code === "KeyW" && !character.isJumping) {
+// Обработка нажатий и свайпов для управления
+canvas.addEventListener("click", () => {
+    if (!character.isJumping) {
         character.isJumping = true;
         character.speedY = character.jumpStrength;
         frameIndex = 0;
-    } else if (e.code === "KeyA" && !character.isSlidingLeft) {
+    }
+});
+
+canvas.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+canvas.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+// Функция для обработки свайпов
+function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+    if (swipeDistance < -50 && !character.isSlidingLeft) { // Свайп влево
         character.isSlidingLeft = true;
         character.targetX = character.x - character.slideDistance;
         frameIndex = 0;
-    } else if (e.code === "KeyD" && !character.isSlidingRight) {
+    } else if (swipeDistance > 50 && !character.isSlidingRight) { // Свайп вправо
         character.isSlidingRight = true;
         character.targetX = character.x + character.slideDistance;
         frameIndex = 0;
     }
-});
+}
 
 // Управление кнопками "Рестарт" и "Назад в меню"
 retryButton.addEventListener("click", startGame);
