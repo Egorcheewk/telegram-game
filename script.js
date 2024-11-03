@@ -9,7 +9,7 @@ canvas.height = window.innerHeight;
 
 // Загрузка GIF персонажа
 const characterGif = new Image();
-characterGif.src = 'https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running.gif'; // Прямая ссылка на GIF персонажа
+characterGif.src = 'https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running.gif?v=2'; // Прямая ссылка на GIF персонажа
 
 // Параметры персонажа
 let player = {
