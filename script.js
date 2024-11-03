@@ -37,11 +37,11 @@ let frameCount = 0;
 let gameSpeed = 3;
 let isGameOver = false;
 
-// Функция для отображения текущего кадра персонажа с замедлением
+// Функция для отображения текущего кадра персонажа с более быстрой сменой кадров
 function drawPlayer() {
-    // Увеличиваем счетчик кадров, чтобы замедлить анимацию
+    // Увеличиваем счетчик кадров, чтобы контролировать скорость анимации
     frameCounter++;
-    if (frameCounter % 10 === 0) { // Меняем кадр каждые 10 итераций
+    if (frameCounter % 5 === 0) { // Меняем кадр каждые 5 итераций для ускоренной анимации
         frameIndex = (frameIndex + 1) % characterFrames.length; // Зацикливаем анимацию
     }
     ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
