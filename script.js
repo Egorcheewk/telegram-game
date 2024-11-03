@@ -9,7 +9,7 @@ canvas.height = window.innerHeight;
 
 let player = {
     x: 50,
-    y: canvas.height - 50,  // Скорректировано для размещения игрока на "полу"
+    y: canvas.height - 70,  // Расположен на дороге
     width: 20,
     height: 30,
     speedY: 0,
@@ -34,8 +34,8 @@ function updatePlayer() {
         player.y += player.speedY;
 
         // Проверка на "пол"
-        if (player.y >= canvas.height - player.height - 20) { // 20px - высота "пола"
-            player.y = canvas.height - player.height - 20;
+        if (player.y >= canvas.height - player.height - 50) { // 50px - высота дороги и "пола" вместе
+            player.y = canvas.height - player.height - 50;
             player.isJumping = false;
         }
     }
@@ -44,7 +44,7 @@ function updatePlayer() {
 function createObstacle() {
     obstacles.push({
         x: canvas.width,
-        y: canvas.height - 40, // Скорректировано для расположения на "полу"
+        y: canvas.height - 70, // Расположен на дороге
         width: 20,
         height: 20
     });
@@ -66,6 +66,11 @@ function drawObstacles() {
             gameOver();
         }
     });
+}
+
+function drawRoad() {
+    ctx.fillStyle = "#777"; // Серая дорога
+    ctx.fillRect(0, canvas.height - 50, canvas.width, 30); // Дорога чуть выше "пола"
 }
 
 function drawGround() {
@@ -95,7 +100,7 @@ function startGame() {
     document.getElementById("retry").style.display = "none";
     document.getElementById("back-to-main-menu").style.display = "none";
     isGameOver = false;
-    player.y = canvas.height - player.height - 20; // Обновлено, чтобы игрок стоял на "полу"
+    player.y = canvas.height - player.height - 50; // Обновлено для размещения на дороге
     player.isJumping = false;
     obstacles = [];
     frameCount = 0;
@@ -107,7 +112,8 @@ function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawGround(); // Рисуем "пол"
+    drawRoad(); // Рисуем дорогу
+    drawGround(); // Рисуем "пол" под дорогой
     drawPlayer();
     updatePlayer();
 
