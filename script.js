@@ -11,10 +11,10 @@ canvas.height = window.innerHeight;
 // Параметры для слоев параллакса
 const parallaxLayers = [
     { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20clouds.png", speed: 0.1, yOffset: 0 }, // Облака
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.3, yOffset: 0 }, // Лес
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 1.0, yOffset: canvas.height - 150 }, // Дорога
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 1.2, yOffset: canvas.height - 250 }, // Высокий слой
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 1.5, yOffset: canvas.height - 100 }  // Нижний слой
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.3, yOffset: canvas.height * 0.2 }, // Лес
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 1.0, yOffset: canvas.height * 0.5 }, // Дорога
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 1.2, yOffset: canvas.height * 0.6 }, // Высокий слой
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 1.5, yOffset: canvas.height * 0.7 }  // Нижний слой
 ];
 
 // Загрузка каждого слоя
@@ -42,7 +42,7 @@ const character = {
     speedY: 0,
     gravity: 0.5,
     jumpStrength: -10,
-    slideDistance: 100 // Расстояние скольжения
+    slideDistance: 100
 };
 
 // Переменные для обработки свайпов
@@ -83,16 +83,19 @@ let isGameOver = false;
 // Отрисовка параллакс-слоев
 function drawParallaxBackground() {
     loadedLayers.forEach((layer, index) => {
+        const aspectRatio = layer.img.width / layer.img.height;
+        const layerHeight = canvas.height;
+        const layerWidth = aspectRatio * layerHeight;
         const offsetX = layerOffsets[index];
         
         // Рисуем слой дважды для бесшовного эффекта
-        ctx.drawImage(layer.img, offsetX, layer.yOffset, canvas.width, canvas.height);
-        ctx.drawImage(layer.img, offsetX + canvas.width, layer.yOffset, canvas.width, canvas.height);
+        ctx.drawImage(layer.img, offsetX, layer.yOffset, layerWidth, layerHeight);
+        ctx.drawImage(layer.img, offsetX + layerWidth, layer.yOffset, layerWidth, layerHeight);
         
         // Обновляем смещение
         layerOffsets[index] -= layer.speed;
 
-        if (layerOffsets[index] <= -canvas.width) {
+        if (layerOffsets[index] <= -layerWidth) {
             layerOffsets[index] = 0;
         }
     });
