@@ -7,11 +7,14 @@ const backToMainMenu = document.getElementById("back-to-main-menu");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Массивы для кадров анимации бега и прыжка
+// Массивы для кадров анимации бега, прыжка и скольжения
 const runFrames = [];
 const jumpFrames = [];
+const slideRightFrames = [];
+const slideLeftFrames = [];
 const totalRunFrames = 5; // Количество кадров бега
 const totalJumpFrames = 5; // Количество кадров прыжка
+const totalSlideFrames = 5; // Количество кадров скольжения
 
 // Загрузка кадров анимации бега
 for (let i = 1; i <= totalRunFrames; i++) {
@@ -27,20 +30,37 @@ for (let i = 1; i <= totalJumpFrames; i++) {
     jumpFrames.push(img);
 }
 
-let frameIndex = 0;
-let frameCounter = 0; // Счетчик для замедления анимации
+// Загрузка кадров анимации скольжения вправо
+for (let i = 1; i <= totalSlideFrames; i++) {
+    const img = new Image();
+    img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl_sliding${i}.png`;
+    slideRightFrames.push(img);
+}
 
+// Создание зеркальных кадров для скольжения влево
+for (let i = 0; i < totalSlideFrames; i++) {
+    const img = new Image();
+    img.src = slideRightFrames[i].src; // Используем тот же источник
+    slideLeftFrames.push(img);
+}
+
+// Статус персонажа
 const character = {
     x: 50,
     y: canvas.height - 100, // Положение персонажа на "дороге"
     width: 64,               // Ширина персонажа
     height: 64,              // Высота персонажа
     isJumping: false,
+    isSlidingLeft: false,
+    isSlidingRight: false,
+    targetX: 50,
     speedY: 0,
     gravity: 0.5,
     jumpStrength: -10
 };
 
+let frameIndex = 0;
+let frameCounter = 0;
 let obstacles = [];
 let frameCount = 0;
 let gameSpeed = 3;
@@ -49,7 +69,18 @@ let isGameOver = false;
 // Функция для отображения текущего кадра персонажа
 function drawPlayer() {
     frameCounter++;
-    let currentFrames = character.isJumping ? jumpFrames : runFrames; // Выбираем кадры в зависимости от состояния персонажа
+    let currentFrames;
+
+    // Определяем, какую анимацию использовать
+    if (character.isSlidingLeft) {
+        currentFrames = slideLeftFrames;
+    } else if (character.isSlidingRight) {
+        currentFrames = slideRightFrames;
+    } else if (character.isJumping) {
+        currentFrames = jumpFrames;
+    } else {
+        currentFrames = runFrames;
+    }
 
     // Зацикливаем анимацию, изменяя кадр каждые 5 итераций
     if (frameCounter % 5 === 0) {
@@ -65,11 +96,24 @@ function updatePlayer() {
         character.speedY += character.gravity;
         character.y += character.speedY;
 
-        // Проверка на касание "пола"
-        if (character.y >= canvas.height - character.height - 50) { // 50px - высота дороги и "пола" вместе
+        if (character.y >= canvas.height - character.height - 50) {
             character.y = canvas.height - character.height - 50;
             character.isJumping = false;
             frameIndex = 0; // Сброс анимации к началу после касания пола
+        }
+    }
+
+    // Обработка движения персонажа к целевой позиции для скольжения
+    if (character.isSlidingLeft || character.isSlidingRight) {
+        const dx = character.targetX - character.x;
+        if (Math.abs(dx) > 2) {
+            character.x += dx * 0.1; // Перемещаемся к целевой позиции
+        } else {
+            // Когда достигли целевой позиции, возвращаемся в исходное положение
+            character.isSlidingLeft = false;
+            character.isSlidingRight = false;
+            frameIndex = 0; // Сброс к началу анимации
+            character.targetX = 50;
         }
     }
 }
@@ -127,18 +171,20 @@ function showMenu() {
 }
 
 function resetGame() {
-    // Сброс всех параметров перед запуском игры
     frameIndex = 0;
     frameCounter = 0;
     obstacles = [];
     frameCount = 0;
+    character.x = 50;
     character.y = canvas.height - character.height - 50;
     character.isJumping = false;
+    character.isSlidingLeft = false;
+    character.isSlidingRight = false;
     isGameOver = false;
 }
 
 function startGame() {
-    resetGame(); // Сброс игры перед запуском
+    resetGame();
 
     menu.style.display = "none";
     canvas.style.display = "block";
@@ -154,12 +200,12 @@ function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawRoad();       // Рисуем дорогу
-    drawGround();     // Рисуем "пол" под дорогой
-    drawPlayer();     // Анимируем персонажа
+    drawRoad();
+    drawGround();
+    drawPlayer();
     updatePlayer();
 
-    if (frameCount % 300 === 0) { // Увеличен интервал для создания препятствий
+    if (frameCount % 300 === 0) {
         createObstacle();
     }
 
@@ -169,48 +215,28 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Ожидание полной загрузки всех кадров перед началом игры
-Promise.all([...runFrames, ...jumpFrames].map(img => new Promise(resolve => img.onload = resolve)))
+// Ожидание загрузки всех кадров перед началом игры
+Promise.all([...runFrames, ...jumpFrames, ...slideRightFrames, ...slideLeftFrames].map(img => new Promise(resolve => img.onload = resolve)))
     .then(() => {
-        console.log("Все кадры загружены");
         showMenu();
     })
     .catch(() => {
         console.error("Ошибка загрузки кадров");
     });
 
-// Событие нажатия на кнопку "Start"
-startButton.addEventListener("click", startGame);
-
-// Событие нажатия на кнопку "Retry"
-document.getElementById("retry").addEventListener("click", startGame);
-
-// Событие нажатия на кнопку "Back to Main Menu"
-backToMainMenu.addEventListener("click", showMenu);
-
-// Обработка нажатия на пробел для прыжка
+// Управление с клавиатуры
 document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && !character.isJumping) {
+    if (e.code === "KeyW" && !character.isJumping) {
         character.isJumping = true;
         character.speedY = character.jumpStrength;
-        frameIndex = 0; // Сбрасываем анимацию прыжка к началу
+        frameIndex = 0;
+    } else if (e.code === "KeyA" && !character.isSlidingLeft) {
+        character.isSlidingLeft = true;
+        character.targetX = 0;
+        frameIndex = 0;
+    } else if (e.code === "KeyD" && !character.isSlidingRight) {
+        character.isSlidingRight = true;
+        character.targetX = canvas.width - character.width;
+        frameIndex = 0;
     }
 });
-
-// Обработка для мобильных устройств
-canvas.addEventListener("touchstart", () => {
-    if (!character.isJumping) {
-        character.isJumping = true;
-        character.speedY = character.jumpStrength;
-        frameIndex = 0; // Сбрасываем анимацию прыжка к началу
-    }
-});
-
-// Автоматический запуск игры в Телеграме
-if (window.Telegram && window.Telegram.WebApp) {
-    Telegram.WebApp.ready();
-    showMenu();
-} else {
-    // Запуск меню в обычном браузере
-    showMenu();
-}
