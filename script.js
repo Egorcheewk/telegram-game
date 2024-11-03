@@ -9,13 +9,14 @@ canvas.height = window.innerHeight;
 
 // Загрузка GIF персонажа
 const characterGif = new Image();
-characterGif.src = 'https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running.gif'; // Замените на URL вашего GIF
+characterGif.src = 'https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running.gif'; // Прямая ссылка на GIF персонажа
 
+// Параметры персонажа
 let player = {
     x: 50,
-    y: canvas.height - 100,  // Положение на "дороге"
-    width: 64,               // Масштабируем ширину GIF
-    height: 64,              // Масштабируем высоту GIF
+    y: canvas.height - 100,  // Положение персонажа на "дороге"
+    width: 64,               // Увеличенный размер ширины GIF
+    height: 64,              // Увеличенный размер высоты GIF
     speedY: 0,
     gravity: 0.5,
     jumpStrength: -10,
@@ -27,7 +28,7 @@ let frameCount = 0;
 let gameSpeed = 3;
 let isGameOver = false;
 
-// Замена красного квадрата на GIF персонажа
+// Отображение GIF персонажа
 function drawPlayer() {
     ctx.drawImage(characterGif, player.x, player.y, player.width, player.height);
 }
