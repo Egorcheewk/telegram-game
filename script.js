@@ -171,6 +171,35 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+// Показ меню
+function showMenu() {
+    menu.style.display = "block";
+    canvas.style.display = "none";
+    document.getElementById("game-over").style.display = "none";
+    retryButton.style.display = "none";
+    backToMainMenuButton.style.display = "none";
+}
+
+// Начало игры
+function startGame() {
+    resetGame();
+    menu.style.display = "none";
+    canvas.style.display = "block";
+    gameLoop();
+}
+
+// Сброс игры
+function resetGame() {
+    frameIndex = 0;
+    frameCounter = 0;
+    character.x = canvas.width / 2 - 32;
+    character.y = canvas.height - character.height - 200;
+    character.isJumping = false;
+    character.isSlidingLeft = false;
+    character.isSlidingRight = false;
+    isGameOver = false;
+}
+
 // События для прыжка и скольжения
 canvas.addEventListener("click", () => {
     if (!character.isJumping) {
@@ -218,25 +247,10 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// Управление кнопками "Рестарт" и "Назад в меню"
+// Управление кнопками
 retryButton.addEventListener("click", startGame);
 backToMainMenuButton.addEventListener("click", showMenu);
 startButton.addEventListener("click", startGame);
 
-function startGame() {
-    resetGame();
-    menu.style.display = "none";
-    canvas.style.display = "block";
-    gameLoop();
-}
-
-function resetGame() {
-    frameIndex = 0;
-    frameCounter = 0;
-    character.x = canvas.width / 2 - 32;
-    character.y = canvas.height - character.height - 200;
-    character.isJumping = false;
-    character.isSlidingLeft = false;
-    character.isSlidingRight = false;
-    isGameOver = false;
-}
+// Переход к меню при загрузке
+showMenu();
