@@ -12,16 +12,16 @@
         
         /* Меню и сообщения */
         #menu, #game-over, #retry, #back-to-main-menu { text-align: center; display: none; }
-        
+
         /* Центрирование меню */
         #menu {
             position: absolute;
-            top: 20%;
+            top: 10%; /* Подняли меню ближе к верхней части */
             left: 50%;
-            transform: translate(-55%, -50%);
+            transform: translate(-50%, 0); /* Убрали вертикальное центрирование */
             z-index: 1;
         }
-        
+
         /* Канвас игры */
         #gameCanvas {
             display: none;
