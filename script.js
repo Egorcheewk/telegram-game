@@ -12,7 +12,7 @@ canvas.height = window.innerHeight;
 const lowLayer = {
     img: new Image(),
     speed: 0.3, // Скорость движения для параллакса
-    yOffset: canvas.height - canvas.height * 0.3 // Смещаем слой, чтобы он находился у нижней границы
+    yOffset: canvas.height - (canvas.height * 0.15) // Устанавливаем нижний слой вплотную к нижней границе
 };
 lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png";
 
@@ -69,7 +69,7 @@ let isGameOver = false;
 // Отрисовка нижнего слоя
 function drawLowLayer() {
     const aspectRatio = lowLayer.img.width / lowLayer.img.height;
-    const layerHeight = canvas.height * 0.3;
+    const layerHeight = canvas.height * 0.2; // Увеличиваем высоту слоя для покрытия черного поля
     const layerWidth = aspectRatio * layerHeight;
     const offsetX = lowLayerOffsetX;
 
