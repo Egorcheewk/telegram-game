@@ -20,7 +20,7 @@ lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/m
 const roadLayer = {
     img: new Image(),
     speed: 0.5,
-    yOffset: lowLayer.yOffset - canvas.height * 0.05 // Размещаем над нижним слоем
+    yOffset: lowLayer.yOffset - canvas.height * 0.1 // Точная настройка над нижним слоем
 };
 roadLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png";
 
@@ -31,7 +31,7 @@ let roadLayerOffsetX = 0;
 // Персонаж
 const character = {
     x: canvas.width / 2 - 32,
-    y: canvas.height - 200,
+    y: roadLayer.yOffset - 64, // Позиция персонажа на уровне дороги
     width: 64,
     height: 64,
     isJumping: false,
@@ -97,7 +97,7 @@ function drawLowLayer() {
 // Отрисовка слоя дороги
 function drawRoadLayer() {
     const aspectRatio = roadLayer.img.width / roadLayer.img.height;
-    const layerHeight = canvas.height * 0.05;
+    const layerHeight = canvas.height * 0.1; // Увеличиваем высоту, чтобы слой был достаточно высоким
     const layerWidth = aspectRatio * layerHeight;
     const offsetX = roadLayerOffsetX;
 
