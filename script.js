@@ -61,7 +61,8 @@ const character = {
     targetX: canvas.width / 2 - 32,
     speedY: 0,
     gravity: 0.5,
-    jumpStrength: -10
+    jumpStrength: -10,
+    slideDistance: 100 // Расстояние скольжения
 };
 
 // Функция для отображения кадра персонажа
@@ -192,11 +193,11 @@ document.addEventListener("keydown", (e) => {
         frameIndex = 0;
     } else if (e.code === "KeyA" && !character.isSlidingLeft) {
         character.isSlidingLeft = true;
-        character.targetX = 0;
+        character.targetX = character.x - character.slideDistance;
         frameIndex = 0;
     } else if (e.code === "KeyD" && !character.isSlidingRight) {
         character.isSlidingRight = true;
-        character.targetX = canvas.width - character.width;
+        character.targetX = character.x + character.slideDistance;
         frameIndex = 0;
     }
 });
