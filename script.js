@@ -192,7 +192,7 @@ Promise.all([...runFrames, ...jumpFrames, ...slideRightFrames].map(img => new Pr
         console.error("Ошибка загрузки кадров");
     });
 
-// Обработка нажатий и свайпов для управления
+// Обработка кликов и свайпов для мобильного управления
 canvas.addEventListener("click", () => {
     if (!character.isJumping) {
         character.isJumping = true;
@@ -223,6 +223,23 @@ function handleSwipe() {
         frameIndex = 0;
     }
 }
+
+// Добавлено управление с клавиатуры для ПК
+document.addEventListener("keydown", (e) => {
+    if (e.code === "KeyW" && !character.isJumping) { // Прыжок
+        character.isJumping = true;
+        character.speedY = character.jumpStrength;
+        frameIndex = 0;
+    } else if (e.code === "KeyA" && !character.isSlidingLeft) { // Скольжение влево
+        character.isSlidingLeft = true;
+        character.targetX = character.x - character.slideDistance;
+        frameIndex = 0;
+    } else if (e.code === "KeyD" && !character.isSlidingRight) { // Скольжение вправо
+        character.isSlidingRight = true;
+        character.targetX = character.x + character.slideDistance;
+        frameIndex = 0;
+    }
+});
 
 // Управление кнопками "Рестарт" и "Назад в меню"
 retryButton.addEventListener("click", startGame);
