@@ -9,7 +9,7 @@ canvas.height = window.innerHeight;
 
 let player = {
     x: 50,
-    y: canvas.height - 30,
+    y: canvas.height - 50,  // Скорректировано для размещения игрока на "полу"
     width: 20,
     height: 30,
     speedY: 0,
@@ -33,8 +33,9 @@ function updatePlayer() {
         player.speedY += player.gravity;
         player.y += player.speedY;
 
-        if (player.y >= canvas.height - player.height) {
-            player.y = canvas.height - player.height;
+        // Проверка на "пол"
+        if (player.y >= canvas.height - player.height - 20) { // 20px - высота "пола"
+            player.y = canvas.height - player.height - 20;
             player.isJumping = false;
         }
     }
@@ -43,7 +44,7 @@ function updatePlayer() {
 function createObstacle() {
     obstacles.push({
         x: canvas.width,
-        y: canvas.height - 20,
+        y: canvas.height - 40, // Скорректировано для расположения на "полу"
         width: 20,
         height: 20
     });
@@ -65,6 +66,11 @@ function drawObstacles() {
             gameOver();
         }
     });
+}
+
+function drawGround() {
+    ctx.fillStyle = "#555";
+    ctx.fillRect(0, canvas.height - 20, canvas.width, 20); // "Пол" на уровне 20 пикселей от нижней границы
 }
 
 function gameOver() {
@@ -89,7 +95,7 @@ function startGame() {
     document.getElementById("retry").style.display = "none";
     document.getElementById("back-to-main-menu").style.display = "none";
     isGameOver = false;
-    player.y = canvas.height - player.height;
+    player.y = canvas.height - player.height - 20; // Обновлено, чтобы игрок стоял на "полу"
     player.isJumping = false;
     obstacles = [];
     frameCount = 0;
@@ -101,6 +107,7 @@ function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    drawGround(); // Рисуем "пол"
     drawPlayer();
     updatePlayer();
 
