@@ -254,4 +254,27 @@ document.addEventListener("keydown", (e) => {
         frameIndex = 0;
     } else if (e.code === "KeyA" && !character.isSlidingLeft) {
         character.isSlidingLeft = true;
-       
+        character.targetX = character.x - character.slideDistance;
+        frameIndex = 0;
+    } else if (e.code === "KeyD" && !character.isSlidingRight) {
+        character.isSlidingRight = true;
+        character.targetX = character.x + character.slideDistance;
+        frameIndex = 0;
+    }
+});
+
+// Управление кнопками
+retryButton.addEventListener("click", startGame);
+backToMainMenuButton.addEventListener("click", showMenu);
+startButton.addEventListener("click", startGame);
+
+// Переход к меню при загрузке всех ресурсов
+Promise.all(
+    [new Promise(resolve => lowLayer.img.onload = resolve)]
+    .concat(runFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .concat(jumpFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .concat(slideRightFrames.map(img => new Promise(resolve => img.onload = resolve)))
+).then(showMenu).catch(() => {
+    console.error("Ошибка загрузки ресурсов");
+    showMenu();
+});
