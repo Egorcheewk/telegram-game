@@ -12,7 +12,7 @@ canvas.height = window.innerHeight;
 const lowLayer = {
     img: new Image(),
     speed: 0.3, // Скорость движения для параллакса
-    yOffset: canvas.height - 100 // Начальная вертикальная позиция слоя
+    yOffset: canvas.height - 200 // Смещаем слой вверх, чтобы он был полностью виден
 };
 lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png";
 
