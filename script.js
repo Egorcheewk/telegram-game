@@ -7,11 +7,15 @@ const backToMainMenu = document.getElementById("back-to-main-menu");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Загрузка GIF персонажа
+const characterGif = new Image();
+characterGif.src = 'https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running.gif'; // Замените на URL вашего GIF
+
 let player = {
     x: 50,
-    y: canvas.height - 70,  // Расположен на дороге
-    width: 20,
-    height: 30,
+    y: canvas.height - 100,  // Положение на "дороге"
+    width: 64,               // Масштабируем ширину GIF
+    height: 64,              // Масштабируем высоту GIF
     speedY: 0,
     gravity: 0.5,
     jumpStrength: -10,
@@ -23,9 +27,9 @@ let frameCount = 0;
 let gameSpeed = 3;
 let isGameOver = false;
 
+// Замена красного квадрата на GIF персонажа
 function drawPlayer() {
-    ctx.fillStyle = "#ff0";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    ctx.drawImage(characterGif, player.x, player.y, player.width, player.height);
 }
 
 function updatePlayer() {
@@ -112,9 +116,9 @@ function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawRoad(); // Рисуем дорогу
-    drawGround(); // Рисуем "пол" под дорогой
-    drawPlayer();
+    drawRoad();       // Рисуем дорогу
+    drawGround();     // Рисуем "пол" под дорогой
+    drawPlayer();     // Отображаем персонажа
     updatePlayer();
 
     if (frameCount % 100 === 0) {
