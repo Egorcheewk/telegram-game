@@ -252,5 +252,13 @@ retryButton.addEventListener("click", startGame);
 backToMainMenuButton.addEventListener("click", showMenu);
 startButton.addEventListener("click", startGame);
 
-// Переход к меню при загрузке
-showMenu();
+// Переход к меню при загрузке всех слоев и анимаций
+Promise.all(
+    loadedLayers.map(layer => new Promise(resolve => layer.img.onload = resolve))
+    .concat(runFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .concat(jumpFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .concat(slideRightFrames.map(img => new Promise(resolve => img.onload = resolve)))
+).then(showMenu).catch(() => {
+    console.error("Ошибка загрузки ресурсов");
+    showMenu(); // Показать меню даже при ошибке загрузки
+});
