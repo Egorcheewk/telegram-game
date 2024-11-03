@@ -7,20 +7,23 @@ const backToMainMenu = document.getElementById("back-to-main-menu");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Загрузка GIF персонажа
-const characterGif = new Image();
-characterGif.src = 'https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running.gif'; // Прямая ссылка на GIF персонажа
+// Массив для хранения кадров анимации персонажа
+const characterFrames = [];
+const totalFrames = 5; // Количество кадров анимации
 
-// Параметры персонажа
-let player = {
+// Загрузка кадров анимации
+for (let i = 1; i <= totalFrames; i++) {
+    const img = new Image();
+    img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running${i}.png`;
+    characterFrames.push(img);
+}
+
+let frameIndex = 0;
+const character = {
     x: 50,
-    y: canvas.height - 100,  // Положение персонажа на "дороге"
-    width: 64,               // Масштабируем ширину GIF
-    height: 64,              // Масштабируем высоту GIF
-    speedY: 0,
-    gravity: 0.5,
-    jumpStrength: -10,
-    isJumping: false
+    y: canvas.height - 100, // Положение персонажа на "дороге"
+    width: 64,               // Ширина персонажа
+    height: 64               // Высота персонажа
 };
 
 let obstacles = [];
@@ -28,20 +31,23 @@ let frameCount = 0;
 let gameSpeed = 3;
 let isGameOver = false;
 
-// Отображение GIF персонажа с масштабированием
+// Функция для отображения текущего кадра персонажа
 function drawPlayer() {
-    ctx.drawImage(characterGif, player.x, player.y, player.width, player.height);
+    ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
+
+    // Переход к следующему кадру
+    frameIndex = (frameIndex + 1) % characterFrames.length; // Зацикливаем анимацию
 }
 
 function updatePlayer() {
-    if (player.isJumping) {
-        player.speedY += player.gravity;
-        player.y += player.speedY;
+    if (character.isJumping) {
+        character.speedY += character.gravity;
+        character.y += character.speedY;
 
         // Проверка на "пол"
-        if (player.y >= canvas.height - player.height - 50) { // 50px - высота дороги и "пола" вместе
-            player.y = canvas.height - player.height - 50;
-            player.isJumping = false;
+        if (character.y >= canvas.height - character.height - 50) { // 50px - высота дороги и "пола" вместе
+            character.y = canvas.height - character.height - 50;
+            character.isJumping = false;
         }
     }
 }
@@ -63,10 +69,10 @@ function drawObstacles() {
 
         // Проверка на столкновение
         if (
-            player.x < obstacle.x + obstacle.width &&
-            player.x + player.width > obstacle.x &&
-            player.y < obstacle.y + obstacle.height &&
-            player.y + player.height > obstacle.y
+            character.x < obstacle.x + obstacle.width &&
+            character.x + character.width > obstacle.x &&
+            character.y < obstacle.y + obstacle.height &&
+            character.y + character.height > obstacle.y
         ) {
             gameOver();
         }
@@ -105,8 +111,8 @@ function startGame() {
     document.getElementById("retry").style.display = "none";
     document.getElementById("back-to-main-menu").style.display = "none";
     isGameOver = false;
-    player.y = canvas.height - player.height - 50; // Обновлено для размещения на дороге
-    player.isJumping = false;
+    character.y = canvas.height - character.height - 50; // Обновлено для размещения на дороге
+    character.isJumping = false;
     obstacles = [];
     frameCount = 0;
     gameLoop();
@@ -119,7 +125,7 @@ function gameLoop() {
 
     drawRoad();       // Рисуем дорогу
     drawGround();     // Рисуем "пол" под дорогой
-    drawPlayer();     // Отображаем персонажа с масштабированием
+    drawPlayer();     // Анимируем персонажа
     updatePlayer();
 
     if (frameCount % 100 === 0) {
@@ -143,17 +149,17 @@ backToMainMenu.addEventListener("click", showMenu);
 
 // Обработка нажатия на пробел для прыжка
 document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && !player.isJumping) {
-        player.isJumping = true;
-        player.speedY = player.jumpStrength;
+    if (e.code === "Space" && !character.isJumping) {
+        character.isJumping = true;
+        character.speedY = character.jumpStrength;
     }
 });
 
 // Обработка для мобильных устройств
 canvas.addEventListener("touchstart", () => {
-    if (!player.isJumping) {
-        player.isJumping = true;
-        player.speedY = player.jumpStrength;
+    if (!character.isJumping) {
+        character.isJumping = true;
+        character.speedY = character.jumpStrength;
     }
 });
 
