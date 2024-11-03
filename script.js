@@ -21,6 +21,7 @@ for (let i = 1; i <= totalRunFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running${i}.png`;
     runFrames.push(img);
+    img.onload = () => console.log(`Run frame ${i} loaded.`);
 }
 
 // Загрузка кадров анимации прыжка
@@ -28,6 +29,7 @@ for (let i = 1; i <= totalJumpFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl_jumping${i}.png`;
     jumpFrames.push(img);
+    img.onload = () => console.log(`Jump frame ${i} loaded.`);
 }
 
 // Загрузка кадров анимации скольжения вправо
@@ -35,6 +37,7 @@ for (let i = 1; i <= totalSlideFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl_sliding${i}.png`;
     slideRightFrames.push(img);
+    img.onload = () => console.log(`Slide right frame ${i} loaded.`);
 }
 
 // Создание зеркальных кадров для скольжения влево
@@ -42,6 +45,7 @@ for (let i = 0; i < totalSlideFrames; i++) {
     const img = new Image();
     img.src = slideRightFrames[i].src; // Используем тот же источник
     slideLeftFrames.push(img);
+    img.onload = () => console.log(`Slide left frame ${i + 1} loaded.`);
 }
 
 // Статус персонажа
