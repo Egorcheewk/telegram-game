@@ -47,9 +47,6 @@ for (let i = 0; i < totalSlideFrames; i++) {
 
 let frameIndex = 0;
 let frameCounter = 0;
-let obstacles = [];
-let frameCount = 0;
-let gameSpeed = 3;
 let isGameOver = false;
 
 // Позиция и статус персонажа
@@ -127,34 +124,6 @@ function drawGround() {
     ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
 }
 
-// Создание препятствий
-function createObstacle() {
-    obstacles.push({
-        x: canvas.width,
-        y: canvas.height - 70,
-        width: 20,
-        height: 20
-    });
-}
-
-// Отображение препятствий
-function drawObstacles() {
-    ctx.fillStyle = "#f00";
-    obstacles.forEach((obstacle, index) => {
-        obstacle.x -= gameSpeed;
-        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-
-        if (
-            character.x < obstacle.x + obstacle.width &&
-            character.x + character.width > obstacle.x &&
-            character.y < obstacle.y + obstacle.height &&
-            character.y + character.height > obstacle.y
-        ) {
-            gameOver();
-        }
-    });
-}
-
 // Конец игры
 function gameOver() {
     isGameOver = true;
@@ -176,8 +145,6 @@ function showMenu() {
 function resetGame() {
     frameIndex = 0;
     frameCounter = 0;
-    obstacles = [];
-    frameCount = 0;
     character.x = canvas.width / 2 - 32;
     character.y = canvas.height - character.height - 50;
     character.isJumping = false;
@@ -204,13 +171,6 @@ function gameLoop() {
     drawPlayer();
     updatePlayer();
 
-    if (frameCount % 300 === 0) {
-        createObstacle();
-    }
-
-    drawObstacles();
-
-    frameCount++;
     requestAnimationFrame(gameLoop);
 }
 
