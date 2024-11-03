@@ -11,28 +11,25 @@ canvas.height = window.innerHeight;
 const characterFrames = [];
 const totalFrames = 5; // Количество кадров анимации
 
-// Загрузка кадров анимации с отладкой
+// Загрузка кадров анимации
 for (let i = 1; i <= totalFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running${i}.png`;
-    
-    img.onload = () => {
-        console.log(`Кадр ${i} успешно загружен`);
-    };
-    
-    img.onerror = () => {
-        console.error(`Ошибка загрузки кадра ${i}`);
-    };
-
     characterFrames.push(img);
 }
 
 let frameIndex = 0;
+let frameCounter = 0; // Счетчик для замедления анимации
+
 const character = {
     x: 50,
     y: canvas.height - 100, // Положение персонажа на "дороге"
     width: 64,               // Ширина персонажа
-    height: 64               // Высота персонажа
+    height: 64,              // Высота персонажа
+    isJumping: false,
+    speedY: 0,
+    gravity: 0.5,
+    jumpStrength: -10
 };
 
 let obstacles = [];
@@ -40,14 +37,14 @@ let frameCount = 0;
 let gameSpeed = 3;
 let isGameOver = false;
 
-// Функция для отображения текущего кадра персонажа
+// Функция для отображения текущего кадра персонажа с замедлением
 function drawPlayer() {
-    if (characterFrames[frameIndex]) {
-        ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
+    // Увеличиваем счетчик кадров, чтобы замедлить анимацию
+    frameCounter++;
+    if (frameCounter % 10 === 0) { // Меняем кадр каждые 10 итераций
         frameIndex = (frameIndex + 1) % characterFrames.length; // Зацикливаем анимацию
-    } else {
-        console.error("Кадр не найден в characterFrames");
     }
+    ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
 }
 
 function updatePlayer() {
@@ -115,17 +112,26 @@ function showMenu() {
     document.getElementById("back-to-main-menu").style.display = "none";
 }
 
+function resetGame() {
+    // Сброс всех параметров перед запуском игры
+    frameIndex = 0;
+    frameCounter = 0;
+    obstacles = [];
+    frameCount = 0;
+    character.y = canvas.height - character.height - 50;
+    character.isJumping = false;
+    isGameOver = false;
+}
+
 function startGame() {
+    resetGame(); // Сброс игры перед запуском
+
     menu.style.display = "none";
     canvas.style.display = "block";
     document.getElementById("game-over").style.display = "none";
     document.getElementById("retry").style.display = "none";
     document.getElementById("back-to-main-menu").style.display = "none";
-    isGameOver = false;
-    character.y = canvas.height - character.height - 50; // Обновлено для размещения на дороге
-    character.isJumping = false;
-    obstacles = [];
-    frameCount = 0;
+
     gameLoop();
 }
 
@@ -153,11 +159,14 @@ function gameLoop() {
 Promise.all(characterFrames.map(img => new Promise(resolve => img.onload = resolve)))
     .then(() => {
         console.log("Все кадры загружены");
-        startGame(); // Запуск игры только после полной загрузки всех кадров
+        showMenu();
     })
     .catch(() => {
         console.error("Ошибка загрузки кадров");
     });
+
+// Событие нажатия на кнопку "Start"
+startButton.addEventListener("click", startGame);
 
 // Событие нажатия на кнопку "Retry"
 document.getElementById("retry").addEventListener("click", startGame);
