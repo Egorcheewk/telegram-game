@@ -10,11 +10,11 @@ canvas.height = window.innerHeight;
 
 // Параметры для слоев параллакса
 const parallaxLayers = [
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20clouds.png", speed: 0.1, yOffset: 0 }, // Облака
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.3, yOffset: canvas.height * 0.2 }, // Лес
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 1.0, yOffset: canvas.height * 0.5 }, // Дорога
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 1.2, yOffset: canvas.height * 0.6 }, // Высокий слой
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 1.5, yOffset: canvas.height * 0.7 }  // Нижний слой
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20clouds.png", speed: 0.05, yOffset: 0 }, // Облака
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.15, yOffset: canvas.height * 0.15 }, // Лес
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 0.5, yOffset: canvas.height * 0.5 }, // Дорога
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 0.6, yOffset: canvas.height * 0.55 }, // Высокий слой
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 0.8, yOffset: canvas.height * 0.65 }  // Нижний слой
 ];
 
 // Загрузка каждого слоя
