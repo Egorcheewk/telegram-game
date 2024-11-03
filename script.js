@@ -11,18 +11,27 @@ canvas.height = window.innerHeight;
 // Параметры для нижнего слоя
 const lowLayer = {
     img: new Image(),
-    speed: 0.3, // Скорость движения для параллакса
-    yOffset: canvas.height - canvas.height * 0.25 // Корректируем позицию, чтобы слой находился внизу и занимал всю ширину экрана
+    speed: 0.3,
+    yOffset: canvas.height - canvas.height * 0.25 // Устанавливаем у нижней границы
 };
 lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png";
 
-// Смещение по оси X для слоя
+// Параметры для слоя дороги
+const roadLayer = {
+    img: new Image(),
+    speed: 0.5,
+    yOffset: lowLayer.yOffset - canvas.height * 0.05 // Размещаем над нижним слоем
+};
+roadLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png";
+
+// Смещения для параллакса
 let lowLayerOffsetX = 0;
+let roadLayerOffsetX = 0;
 
 // Персонаж
 const character = {
     x: canvas.width / 2 - 32,
-    y: canvas.height - 150,
+    y: canvas.height - 200,
     width: 64,
     height: 64,
     isJumping: false,
@@ -69,7 +78,7 @@ let isGameOver = false;
 // Отрисовка нижнего слоя
 function drawLowLayer() {
     const aspectRatio = lowLayer.img.width / lowLayer.img.height;
-    const layerHeight = canvas.height * 0.25; // Устанавливаем высоту слоя с учетом пропорций
+    const layerHeight = canvas.height * 0.25;
     const layerWidth = aspectRatio * layerHeight;
     const offsetX = lowLayerOffsetX;
 
@@ -82,6 +91,25 @@ function drawLowLayer() {
 
     if (lowLayerOffsetX <= -layerWidth) {
         lowLayerOffsetX = 0;
+    }
+}
+
+// Отрисовка слоя дороги
+function drawRoadLayer() {
+    const aspectRatio = roadLayer.img.width / roadLayer.img.height;
+    const layerHeight = canvas.height * 0.05;
+    const layerWidth = aspectRatio * layerHeight;
+    const offsetX = roadLayerOffsetX;
+
+    // Рисуем слой дважды для бесшовного эффекта
+    ctx.drawImage(roadLayer.img, offsetX, roadLayer.yOffset, layerWidth, layerHeight);
+    ctx.drawImage(roadLayer.img, offsetX + layerWidth, roadLayer.yOffset, layerWidth, layerHeight);
+
+    // Обновляем смещение
+    roadLayerOffsetX -= roadLayer.speed;
+
+    if (roadLayerOffsetX <= -layerWidth) {
+        roadLayerOffsetX = 0;
     }
 }
 
@@ -125,8 +153,8 @@ function updatePlayer() {
         character.speedY += character.gravity;
         character.y += character.speedY;
 
-        if (character.y >= canvas.height - 200) { // Позиция "дороги"
-            character.y = canvas.height - 200;
+        if (character.y >= roadLayer.yOffset - character.height) { // Позиция "дороги"
+            character.y = roadLayer.yOffset - character.height;
             character.isJumping = false;
         }
     }
@@ -150,8 +178,9 @@ function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Отрисовка нижнего слоя и персонажа
+    // Отрисовка слоев и персонажа
     drawLowLayer();
+    drawRoadLayer();
     updatePlayer();
     drawPlayer();
 
@@ -180,7 +209,7 @@ function resetGame() {
     frameIndex = 0;
     frameCounter = 0;
     character.x = canvas.width / 2 - 32;
-    character.y = canvas.height - character.height - 200;
+    character.y = roadLayer.yOffset - character.height;
     character.isJumping = false;
     character.isSlidingLeft = false;
     character.isSlidingRight = false;
@@ -225,27 +254,4 @@ document.addEventListener("keydown", (e) => {
         frameIndex = 0;
     } else if (e.code === "KeyA" && !character.isSlidingLeft) {
         character.isSlidingLeft = true;
-        character.targetX = character.x - character.slideDistance;
-        frameIndex = 0;
-    } else if (e.code === "KeyD" && !character.isSlidingRight) {
-        character.isSlidingRight = true;
-        character.targetX = character.x + character.slideDistance;
-        frameIndex = 0;
-    }
-});
-
-// Управление кнопками
-retryButton.addEventListener("click", startGame);
-backToMainMenuButton.addEventListener("click", showMenu);
-startButton.addEventListener("click", startGame);
-
-// Переход к меню при загрузке нижнего слоя и анимаций
-Promise.all(
-    [new Promise(resolve => lowLayer.img.onload = resolve)]
-    .concat(runFrames.map(img => new Promise(resolve => img.onload = resolve)))
-    .concat(jumpFrames.map(img => new Promise(resolve => img.onload = resolve)))
-    .concat(slideRightFrames.map(img => new Promise(resolve => img.onload = resolve)))
-).then(showMenu).catch(() => {
-    console.error("Ошибка загрузки ресурсов");
-    showMenu(); // Показать меню даже при ошибке загрузки
-});
+       
