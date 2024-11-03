@@ -12,7 +12,6 @@ canvas.height = window.innerHeight;
 const runFrames = [];
 const jumpFrames = [];
 const slideRightFrames = [];
-const slideLeftFrames = [];
 const totalRunFrames = 5;
 const totalJumpFrames = 5;
 const totalSlideFrames = 5;
@@ -36,13 +35,6 @@ for (let i = 1; i <= totalSlideFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl_sliding${i}.png`;
     slideRightFrames.push(img);
-}
-
-// Создание зеркальных кадров для скольжения влево
-for (let i = 0; i < totalSlideFrames; i++) {
-    const img = new Image();
-    img.src = slideRightFrames[i].src;
-    slideLeftFrames.push(img);
 }
 
 let frameIndex = 0;
@@ -72,20 +64,31 @@ function drawPlayer() {
 
     // Определяем, какую анимацию использовать
     if (character.isSlidingLeft) {
-        currentFrames = slideLeftFrames;
+        currentFrames = slideRightFrames; // Используем кадры вправо для отражения
+        ctx.save();
+        ctx.scale(-1, 1); // Отражаем изображение по горизонтали
+        ctx.drawImage(
+            currentFrames[frameIndex],
+            -character.x - character.width, // Инвертируем x-позицию для отражения
+            character.y,
+            character.width,
+            character.height
+        );
+        ctx.restore();
     } else if (character.isSlidingRight) {
         currentFrames = slideRightFrames;
+        ctx.drawImage(currentFrames[frameIndex], character.x, character.y, character.width, character.height);
     } else if (character.isJumping) {
         currentFrames = jumpFrames;
+        ctx.drawImage(currentFrames[frameIndex], character.x, character.y, character.width, character.height);
     } else {
         currentFrames = runFrames;
+        ctx.drawImage(currentFrames[frameIndex], character.x, character.y, character.width, character.height);
     }
 
     if (frameCounter % 5 === 0) {
         frameIndex = (frameIndex + 1) % currentFrames.length;
     }
-
-    ctx.drawImage(currentFrames[frameIndex], character.x, character.y, character.width, character.height);
 }
 
 // Обновление позиции персонажа
@@ -176,7 +179,7 @@ function gameLoop() {
 }
 
 // Переход к меню после загрузки всех кадров
-Promise.all([...runFrames, ...jumpFrames, ...slideRightFrames, ...slideLeftFrames].map(img => new Promise(resolve => img.onload = resolve)))
+Promise.all([...runFrames, ...jumpFrames, ...slideRightFrames].map(img => new Promise(resolve => img.onload = resolve)))
     .then(() => {
         console.log("Все кадры загружены");
         showMenu();
