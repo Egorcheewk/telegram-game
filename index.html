@@ -18,7 +18,7 @@
             position: absolute;
             top: 20%;
             left: 50%;
-            transform: translate(-55%, -50%); /* Смещение кнопки левее */
+            transform: translate(-55%, -50%);
             z-index: 1;
         }
         
@@ -30,14 +30,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 100vw;
-            height: 80vh; /* Сделаем канвас чуть меньше, чтобы он был виден на экране */
+            height: 80vh;
             background-size: cover;
         }
 
-        /* Центрирование кнопок Game Over, Retry и Back to Main Menu */
+        /* Кнопки Game Over, Retry и Back to Main Menu в верхней части */
         #game-over {
             position: absolute;
-            bottom: 20%;
+            top: 10%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
@@ -46,7 +46,7 @@
 
         #retry {
             position: absolute;
-            bottom: 15%;
+            top: 15%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 20px;
@@ -57,7 +57,7 @@
 
         #back-to-main-menu {
             position: absolute;
-            bottom: 10%;
+            top: 20%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 20px;
