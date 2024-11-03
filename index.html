@@ -18,21 +18,48 @@
             position: absolute;
             top: 20%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-55%, -50%); /* Смещение кнопки левее */
             z-index: 1;
         }
         
         /* Канвас игры */
-        #gameCanvas { display: none; background-size: cover; }
+        #gameCanvas {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+        }
 
-        /* Центрирование кнопки Game Over и Retry */
-        #game-over, #retry, #back-to-main-menu {
+        /* Центрирование кнопок Game Over, Retry и Back to Main Menu */
+        #game-over {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            z-index: 2;
+        }
+
+        #retry {
             position: absolute;
             bottom: 15%;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 2;
             font-size: 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        #back-to-main-menu {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            z-index: 2;
         }
 
         /* Фон */
