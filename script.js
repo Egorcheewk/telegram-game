@@ -8,13 +8,13 @@ const menu = document.getElementById("menu");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Параметры для слоев параллакса
+// Параметры для слоев параллакса с учетом вашего описания
 const parallaxLayers = [
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20clouds.png", speed: 0.05, yOffset: 0 }, // Облака
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.15, yOffset: canvas.height * 0.15 }, // Лес
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 0.5, yOffset: canvas.height * 0.5 }, // Дорога
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 0.6, yOffset: canvas.height * 0.55 }, // Высокий слой
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 0.8, yOffset: canvas.height * 0.65 }  // Нижний слой
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20clouds.png", speed: 0.02, yOffset: canvas.height * 0.05 }, // Облака
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.1, yOffset: canvas.height * 0.15 }, // Лес
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 0.4, yOffset: canvas.height * 0.5 }, // Дорога
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 0.5, yOffset: canvas.height * 0.6 }, // Высокий слой
+    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 0.7, yOffset: canvas.height * 0.75 }  // Нижний слой
 ];
 
 // Загрузка каждого слоя
@@ -32,7 +32,7 @@ const layerOffsets = new Array(parallaxLayers.length).fill(0);
 // Персонаж
 const character = {
     x: canvas.width / 2 - 32,
-    y: canvas.height - 200,
+    y: canvas.height - 150,
     width: 64,
     height: 64,
     isJumping: false,
@@ -44,10 +44,6 @@ const character = {
     jumpStrength: -10,
     slideDistance: 100
 };
-
-// Переменные для обработки свайпов
-let touchStartX = 0;
-let touchEndX = 0;
 
 // Анимации персонажа
 const runFrames = [];
@@ -84,7 +80,7 @@ let isGameOver = false;
 function drawParallaxBackground() {
     loadedLayers.forEach((layer, index) => {
         const aspectRatio = layer.img.width / layer.img.height;
-        const layerHeight = canvas.height;
+        const layerHeight = canvas.height * 0.3; // Задаем высоту слоя, чтобы не было черных полос
         const layerWidth = aspectRatio * layerHeight;
         const offsetX = layerOffsets[index];
         
