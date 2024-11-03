@@ -8,26 +8,16 @@ const menu = document.getElementById("menu");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Параметры для слоев параллакса с учетом вашего описания
-const parallaxLayers = [
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20clouds.png", speed: 0.02, yOffset: canvas.height * 0.05 }, // Облака
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20back%20layer%20forest.png", speed: 0.1, yOffset: canvas.height * 0.15 }, // Лес
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20mid%20layer%20(road).png", speed: 0.4, yOffset: canvas.height * 0.5 }, // Дорога
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20high%20layer.png", speed: 0.5, yOffset: canvas.height * 0.6 }, // Высокий слой
-    { src: "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png", speed: 0.7, yOffset: canvas.height * 0.75 }  // Нижний слой
-];
+// Параметры для нижнего слоя
+const lowLayer = {
+    img: new Image(),
+    speed: 0.3, // Скорость движения для параллакса
+    yOffset: canvas.height - 100 // Начальная вертикальная позиция слоя
+};
+lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low%20layer.png";
 
-// Загрузка каждого слоя
-const loadedLayers = [];
-parallaxLayers.forEach(layerInfo => {
-    const img = new Image();
-    img.src = layerInfo.src;
-    layerInfo.img = img;
-    loadedLayers.push(layerInfo);
-});
-
-// Смещения по оси X для каждого слоя
-const layerOffsets = new Array(parallaxLayers.length).fill(0);
+// Смещение по оси X для слоя
+let lowLayerOffsetX = 0;
 
 // Персонаж
 const character = {
@@ -76,25 +66,23 @@ let frameIndex = 0;
 let frameCounter = 0;
 let isGameOver = false;
 
-// Отрисовка параллакс-слоев
-function drawParallaxBackground() {
-    loadedLayers.forEach((layer, index) => {
-        const aspectRatio = layer.img.width / layer.img.height;
-        const layerHeight = canvas.height * 0.3; // Задаем высоту слоя, чтобы не было черных полос
-        const layerWidth = aspectRatio * layerHeight;
-        const offsetX = layerOffsets[index];
-        
-        // Рисуем слой дважды для бесшовного эффекта
-        ctx.drawImage(layer.img, offsetX, layer.yOffset, layerWidth, layerHeight);
-        ctx.drawImage(layer.img, offsetX + layerWidth, layer.yOffset, layerWidth, layerHeight);
-        
-        // Обновляем смещение
-        layerOffsets[index] -= layer.speed;
+// Отрисовка нижнего слоя
+function drawLowLayer() {
+    const aspectRatio = lowLayer.img.width / lowLayer.img.height;
+    const layerHeight = canvas.height * 0.3;
+    const layerWidth = aspectRatio * layerHeight;
+    const offsetX = lowLayerOffsetX;
 
-        if (layerOffsets[index] <= -layerWidth) {
-            layerOffsets[index] = 0;
-        }
-    });
+    // Рисуем слой дважды для бесшовного эффекта
+    ctx.drawImage(lowLayer.img, offsetX, lowLayer.yOffset, layerWidth, layerHeight);
+    ctx.drawImage(lowLayer.img, offsetX + layerWidth, lowLayer.yOffset, layerWidth, layerHeight);
+
+    // Обновляем смещение
+    lowLayerOffsetX -= lowLayer.speed;
+
+    if (lowLayerOffsetX <= -layerWidth) {
+        lowLayerOffsetX = 0;
+    }
 }
 
 // Отрисовка персонажа
@@ -162,8 +150,8 @@ function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Отрисовка фона и персонажа
-    drawParallaxBackground();
+    // Отрисовка нижнего слоя и персонажа
+    drawLowLayer();
     updatePlayer();
     drawPlayer();
 
@@ -251,9 +239,9 @@ retryButton.addEventListener("click", startGame);
 backToMainMenuButton.addEventListener("click", showMenu);
 startButton.addEventListener("click", startGame);
 
-// Переход к меню при загрузке всех слоев и анимаций
+// Переход к меню при загрузке нижнего слоя и анимаций
 Promise.all(
-    loadedLayers.map(layer => new Promise(resolve => layer.img.onload = resolve))
+    [new Promise(resolve => lowLayer.img.onload = resolve)]
     .concat(runFrames.map(img => new Promise(resolve => img.onload = resolve)))
     .concat(jumpFrames.map(img => new Promise(resolve => img.onload = resolve)))
     .concat(slideRightFrames.map(img => new Promise(resolve => img.onload = resolve)))
