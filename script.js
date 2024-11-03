@@ -11,10 +11,19 @@ canvas.height = window.innerHeight;
 const characterFrames = [];
 const totalFrames = 5; // Количество кадров анимации
 
-// Загрузка кадров анимации
+// Загрузка кадров анимации с отладкой
 for (let i = 1; i <= totalFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running${i}.png`;
+    
+    img.onload = () => {
+        console.log(`Кадр ${i} успешно загружен`);
+    };
+    
+    img.onerror = () => {
+        console.error(`Ошибка загрузки кадра ${i}`);
+    };
+
     characterFrames.push(img);
 }
 
@@ -33,10 +42,12 @@ let isGameOver = false;
 
 // Функция для отображения текущего кадра персонажа
 function drawPlayer() {
-    ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
-
-    // Переход к следующему кадру
-    frameIndex = (frameIndex + 1) % characterFrames.length; // Зацикливаем анимацию
+    if (characterFrames[frameIndex]) {
+        ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
+        frameIndex = (frameIndex + 1) % characterFrames.length; // Зацикливаем анимацию
+    } else {
+        console.error("Кадр не найден в characterFrames");
+    }
 }
 
 function updatePlayer() {
@@ -138,8 +149,15 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Событие нажатия на кнопку "Start"
-startButton.addEventListener("click", startGame);
+// Ожидание полной загрузки всех кадров перед началом игры
+Promise.all(characterFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .then(() => {
+        console.log("Все кадры загружены");
+        startGame(); // Запуск игры только после полной загрузки всех кадров
+    })
+    .catch(() => {
+        console.error("Ошибка загрузки кадров");
+    });
 
 // Событие нажатия на кнопку "Retry"
 document.getElementById("retry").addEventListener("click", startGame);
