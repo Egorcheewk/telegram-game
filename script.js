@@ -7,15 +7,24 @@ const backToMainMenu = document.getElementById("back-to-main-menu");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Массив для хранения кадров анимации персонажа
-const characterFrames = [];
-const totalFrames = 5; // Количество кадров анимации
+// Массивы для кадров анимации бега и прыжка
+const runFrames = [];
+const jumpFrames = [];
+const totalRunFrames = 5; // Количество кадров бега
+const totalJumpFrames = 5; // Количество кадров прыжка
 
-// Загрузка кадров анимации
-for (let i = 1; i <= totalFrames; i++) {
+// Загрузка кадров анимации бега
+for (let i = 1; i <= totalRunFrames; i++) {
     const img = new Image();
     img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl-running${i}.png`;
-    characterFrames.push(img);
+    runFrames.push(img);
+}
+
+// Загрузка кадров анимации прыжка
+for (let i = 1; i <= totalJumpFrames; i++) {
+    const img = new Image();
+    img.src = `https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/animecosplaygirl_jumping${i}.png`;
+    jumpFrames.push(img);
 }
 
 let frameIndex = 0;
@@ -37,14 +46,18 @@ let frameCount = 0;
 let gameSpeed = 3;
 let isGameOver = false;
 
-// Функция для отображения текущего кадра персонажа с более быстрой сменой кадров
+// Функция для отображения текущего кадра персонажа
 function drawPlayer() {
-    // Увеличиваем счетчик кадров, чтобы контролировать скорость анимации
     frameCounter++;
-    if (frameCounter % 5 === 0) { // Меняем кадр каждые 5 итераций для ускоренной анимации
-        frameIndex = (frameIndex + 1) % characterFrames.length; // Зацикливаем анимацию
+    let currentFrames = character.isJumping ? jumpFrames : runFrames; // Выбираем кадры в зависимости от состояния персонажа
+
+    // Зацикливаем анимацию, изменяя кадр каждые 5 итераций
+    if (frameCounter % 5 === 0) {
+        frameIndex = (frameIndex + 1) % currentFrames.length;
     }
-    ctx.drawImage(characterFrames[frameIndex], character.x, character.y, character.width, character.height);
+
+    // Рисуем текущий кадр персонажа
+    ctx.drawImage(currentFrames[frameIndex], character.x, character.y, character.width, character.height);
 }
 
 function updatePlayer() {
@@ -52,10 +65,11 @@ function updatePlayer() {
         character.speedY += character.gravity;
         character.y += character.speedY;
 
-        // Проверка на "пол"
+        // Проверка на касание "пола"
         if (character.y >= canvas.height - character.height - 50) { // 50px - высота дороги и "пола" вместе
             character.y = canvas.height - character.height - 50;
             character.isJumping = false;
+            frameIndex = 0; // Сброс анимации к началу после касания пола
         }
     }
 }
@@ -156,7 +170,7 @@ function gameLoop() {
 }
 
 // Ожидание полной загрузки всех кадров перед началом игры
-Promise.all(characterFrames.map(img => new Promise(resolve => img.onload = resolve)))
+Promise.all([...runFrames, ...jumpFrames].map(img => new Promise(resolve => img.onload = resolve)))
     .then(() => {
         console.log("Все кадры загружены");
         showMenu();
@@ -179,6 +193,7 @@ document.addEventListener("keydown", (e) => {
     if (e.code === "Space" && !character.isJumping) {
         character.isJumping = true;
         character.speedY = character.jumpStrength;
+        frameIndex = 0; // Сбрасываем анимацию прыжка к началу
     }
 });
 
@@ -187,6 +202,7 @@ canvas.addEventListener("touchstart", () => {
     if (!character.isJumping) {
         character.isJumping = true;
         character.speedY = character.jumpStrength;
+        frameIndex = 0; // Сбрасываем анимацию прыжка к началу
     }
 });
 
