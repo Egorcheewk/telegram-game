@@ -77,6 +77,9 @@ function gameOver() {
 function showMenu() {
     menu.style.display = "block";
     canvas.style.display = "none";
+    document.getElementById("game-over").style.display = "none";
+    document.getElementById("retry").style.display = "none";
+    document.getElementById("back-to-main-menu").style.display = "none";
 }
 
 function startGame() {
