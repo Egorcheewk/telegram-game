@@ -216,65 +216,7 @@ function resetGame() {
     isGameOver = false;
 }
 
-// События для прыжка и скольжения
-canvas.addEventListener("click", () => {
-    if (!character.isJumping) {
-        character.isJumping = true;
-        character.speedY = character.jumpStrength;
-    }
-});
-
-canvas.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-canvas.addEventListener("touchend", (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-});
-
-function handleSwipe() {
-    const swipeDistance = touchEndX - touchStartX;
-    if (swipeDistance < -50 && !character.isSlidingLeft) { // Свайп влево
-        character.isSlidingLeft = true;
-        character.targetX = character.x - character.slideDistance;
-        frameIndex = 0;
-    } else if (swipeDistance > 50 && !character.isSlidingRight) { // Свайп вправо
-        character.isSlidingRight = true;
-        character.targetX = character.x + character.slideDistance;
-        frameIndex = 0;
-    }
-}
-
-// Поддержка клавиатуры для ПК
-document.addEventListener("keydown", (e) => {
-    if (e.code === "KeyW" && !character.isJumping) {
-        character.isJumping = true;
-        character.speedY = character.jumpStrength;
-        frameIndex = 0;
-    } else if (e.code === "KeyA" && !character.isSlidingLeft) {
-        character.isSlidingLeft = true;
-        character.targetX = character.x - character.slideDistance;
-        frameIndex = 0;
-    } else if (e.code === "KeyD" && !character.isSlidingRight) {
-        character.isSlidingRight = true;
-        character.targetX = character.x + character.slideDistance;
-        frameIndex = 0;
-    }
-});
-
-// Управление кнопками
+// Управление ивентами
 retryButton.addEventListener("click", startGame);
 backToMainMenuButton.addEventListener("click", showMenu);
 startButton.addEventListener("click", startGame);
-
-// Переход к меню при загрузке всех ресурсов
-Promise.all(
-    [new Promise(resolve => lowLayer.img.onload = resolve)]
-    .concat(runFrames.map(img => new Promise(resolve => img.onload = resolve)))
-    .concat(jumpFrames.map(img => new Promise(resolve => img.onload = resolve)))
-    .concat(slideRightFrames.map(img => new Promise(resolve => img.onload = resolve)))
-).then(showMenu).catch(() => {
-    console.error("Ошибка загрузки ресурсов");
-    showMenu();
-});
