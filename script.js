@@ -216,7 +216,18 @@ function resetGame() {
     isGameOver = false;
 }
 
-// Управление ивентами
+// Управление кнопками
 retryButton.addEventListener("click", startGame);
 backToMainMenuButton.addEventListener("click", showMenu);
 startButton.addEventListener("click", startGame);
+
+// Переход к меню после загрузки всех ресурсов
+Promise.all(
+    [new Promise(resolve => lowLayer.img.onload = resolve), new Promise(resolve => roadLayer.img.onload = resolve)]
+    .concat(runFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .concat(jumpFrames.map(img => new Promise(resolve => img.onload = resolve)))
+    .concat(slideRightFrames.map(img => new Promise(resolve => img.onload = resolve)))
+).then(showMenu).catch(() => {
+    console.error("Ошибка загрузки ресурсов");
+    showMenu();
+});
