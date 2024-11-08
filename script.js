@@ -8,7 +8,7 @@ canvas.height = window.innerHeight;
 const roadLayer = {
     img: new Image(),
     speed: 0.5,
-    yOffset: canvas.height - canvas.height * 0.1 // Позиция слоя над нижним краем
+    yOffset: canvas.height - canvas.height * 0.2 // Подняли слой выше и увеличили высоту
 };
 roadLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%20mid.png";
 
@@ -18,7 +18,7 @@ let roadLayerOffsetX = 0;
 // Отрисовка слоя дороги
 function drawRoadLayer() {
     const aspectRatio = roadLayer.img.width / roadLayer.img.height;
-    const layerHeight = canvas.height * 0.1; // Высота слоя относительно экрана
+    const layerHeight = canvas.height * 0.2; // Увеличенная высота слоя
     const layerWidth = aspectRatio * layerHeight;
     const offsetX = roadLayerOffsetX;
 
