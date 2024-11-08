@@ -8,7 +8,7 @@ canvas.height = window.innerHeight;
 const lowLayer = {
     img: new Image(),
     speed: 0.3,
-    yOffset: canvas.height - canvas.height * 0.25 // Примыкает к нижнему краю экрана
+    yOffset: canvas.height - canvas.height * 0.3 // Поднимаем слой выше для видимости
 };
 lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%201%20low.png";
 
@@ -16,7 +16,7 @@ lowLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/m
 const roadLayer = {
     img: new Image(),
     speed: 0.5,
-    yOffset: lowLayer.yOffset - canvas.height * 0.1 // Размещаем слой дороги чуть выше нижнего слоя
+    yOffset: lowLayer.yOffset + canvas.height * 0.05 // Размещаем слой дороги поверх нижнего слоя
 };
 roadLayer.img.src = "https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/nightwalk%20bg%20mid.png";
 
@@ -27,7 +27,7 @@ let roadLayerOffsetX = 0;
 // Функция для отрисовки нижнего слоя
 function drawLowLayer() {
     const aspectRatio = lowLayer.img.width / lowLayer.img.height;
-    const layerHeight = canvas.height * 0.35; // Увеличенная высота нижнего слоя для заполнения черного пространства
+    const layerHeight = canvas.height * 0.3; // Высота нижнего слоя для покрытия черного пространства
     const layerWidth = aspectRatio * layerHeight;
     const offsetX = lowLayerOffsetX;
 
@@ -46,7 +46,7 @@ function drawLowLayer() {
 // Функция для отрисовки слоя дороги
 function drawRoadLayer() {
     const aspectRatio = roadLayer.img.width / roadLayer.img.height;
-    const layerHeight = canvas.height * 0.2; // Высота слоя дороги
+    const layerHeight = canvas.height * 0.15; // Высота слоя дороги
     const layerWidth = aspectRatio * layerHeight;
     const offsetX = roadLayerOffsetX;
 
