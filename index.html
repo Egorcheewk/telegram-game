@@ -10,21 +10,8 @@
         body, html { width: 100%; height: 100%; overflow: hidden; }
         body { font-family: Arial, sans-serif; background: #000; color: white; display: flex; align-items: center; justify-content: center; position: relative; }
         
-        /* Меню и сообщения */
-        #menu, #game-over, #retry, #back-to-main-menu { text-align: center; display: none; }
-
-        /* Центрирование меню */
-        #menu {
-            position: absolute;
-            top: 10%; /* Подняли меню ближе к верхней части */
-            left: 50%;
-            transform: translateX(-50%); /* Центрирование по горизонтали */
-            z-index: 1;
-        }
-
         /* Канвас игры */
         #gameCanvas {
-            display: none;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -33,74 +20,12 @@
             height: 80vh;
             background-size: cover;
         }
-
-        /* Кнопки Game Over, Retry и Back to Main Menu в верхней части */
-        #game-over {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            z-index: 2;
-        }
-
-        #retry {
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 20px;
-            margin-top: 10px;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        #back-to-main-menu {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 20px;
-            margin-top: 10px;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        /* Фон */
-        #background {
-            position: absolute;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: 0;
-        }
-
-        /* Кнопка старта */
-        #start-button {
-            display: block;
-            margin: 0 auto;
-            cursor: pointer;
-            z-index: 2;
-        }
     </style>
 </head>
 <body>
-    <!-- Фон -->
-    <img id="background" src="https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/bg.png" alt="Background">
-
-    <!-- Меню -->
-    <div id="menu">
-        <img id="start-button" src="https://raw.githubusercontent.com/Egorcheewk/telegram-game/main/assets/Sprite-0002.png" alt="Start Button">
-    </div>
-
     <!-- Канвас игры -->
     <canvas id="gameCanvas"></canvas>
-
-    <!-- Сообщение о проигрыше и кнопка возврата в меню -->
-    <div id="game-over">Game Over</div>
-    <div id="retry">Retry</div>
-    <div id="back-to-main-menu">Back to Main Menu</div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
