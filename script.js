@@ -13,44 +13,35 @@ resizeCanvas();
 // Обновление размеров холста при изменении размера окна
 window.addEventListener("resize", () => {
     resizeCanvas();
-    layers.forEach(layer => layer.resizeLayer());
+    layers.forEach(layer => layer.updatePosition());
 });
 
 // Класс слоя
 class Layer {
-    constructor(imagePath, speedModifier) {
+    constructor(imagePath, speedModifier, yOffset = 0) {
         this.image = new Image();
         this.image.src = imagePath; // Путь к изображению слоя
         this.speedModifier = speedModifier; // Скорость движения слоя
         this.x = 0; // Горизонтальная позиция слоя
-        this.y = 0; // Вертикальная позиция слоя
-        this.width = canvas.width; // Ширина слоя (по умолчанию равна ширине холста)
-        this.height = canvas.height; // Высота слоя (по умолчанию равна высоте холста)
-        this.aspectRatio = 1; // Соотношение сторон изображения (по умолчанию 1:1)
+        this.y = yOffset; // Вертикальная позиция слоя
+        this.width = 0; // Ширина слоя (определяется после загрузки изображения)
+        this.height = 0; // Высота слоя (определяется после загрузки изображения)
 
         // Проверка загрузки изображения
         this.image.onload = () => {
-            this.aspectRatio = this.image.width / this.image.height; // Рассчитываем соотношение сторон
-            this.resizeLayer();
-            console.log(`Image loaded: ${imagePath} (aspect ratio: ${this.aspectRatio})`);
+            this.width = this.image.width; // Используем оригинальную ширину
+            this.height = this.image.height; // Используем оригинальную высоту
+            console.log(`Image loaded: ${imagePath}, size: ${this.width}x${this.height}`);
         };
         this.image.onerror = () => {
             console.error(`Failed to load image: ${imagePath}`);
         };
     }
 
-    // Метод для масштабирования слоя при изменении размеров холста
-    resizeLayer() {
-        if (canvas.width / canvas.height > this.aspectRatio) {
-            // Если экран шире изображения, подгоняем по высоте
-            this.height = canvas.height;
-            this.width = this.height * this.aspectRatio;
-        } else {
-            // Если экран выше изображения, подгоняем по ширине
-            this.width = canvas.width;
-            this.height = this.width / this.aspectRatio;
-        }
-        console.log(`Layer resized to: ${this.width}x${this.height}`);
+    // Метод для обновления позиции слоя
+    updatePosition() {
+        // Обновляем вертикальную позицию слоя, если нужно
+        this.y = canvas.height - this.height; // Слой располагается у нижней границы экрана
     }
 
     // Метод отрисовки слоя
