@@ -74,7 +74,7 @@ class Layer {
 const layers = [
     new Layer("assets/nightwalk bg mid.png", 1, 1), // Передний слой
     new Layer("assets/nightwalk bg forest.png", 0.5, 1), // Средний слой
-    new Layer("assets/nightwalk bg 1 low.png", 0.2, -50) // Задний слой
+    new Layer("assets/nightwalk bg 1 low.png", 0.2, -200) // Задний слой
 ];
 
 // Обновление и отрисовка слоёв
