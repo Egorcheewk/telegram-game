@@ -1,17 +1,31 @@
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+// Установка размеров холста
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    console.log(`Canvas resized to: ${canvas.width}x${canvas.height}`);
+}
+resizeCanvas();
+
+// Обработчик изменения размеров окна
+window.addEventListener("resize", resizeCanvas);
+
 class Layer {
     constructor(imagePath, speedModifier, scale = 1, y = 0) {
         this.image = new Image();
-        this.image.src = imagePath; // Путь к изображению слоя
-        this.speedModifier = speedModifier; // Скорость движения слоя
+        this.image.src = imagePath; // Путь к изображению
+        this.speedModifier = speedModifier; // Скорость слоя
         this.scale = scale; // Масштаб слоя
-        this.y = y; // Вертикальная позиция слоя
-        this.x = 0; // Горизонтальная позиция слоя
+        this.y = y; // Вертикальное положение слоя
+        this.x = 0; // Горизонтальное положение слоя
         this.width = 0; // Ширина слоя
         this.height = 0; // Высота слоя
 
-        // Загрузка изображения
+        // Загружаем изображение и обрабатываем ошибки
         this.image.onload = () => {
-            console.log(`Image loaded: ${imagePath}`);
+            console.log(`Image successfully loaded: ${imagePath}`);
             this.resizeLayer();
         };
         this.image.onerror = () => {
@@ -19,22 +33,22 @@ class Layer {
         };
     }
 
-    // Метод для масштабирования слоя
+    // Метод масштабирования слоя
     resizeLayer() {
         const aspectRatio = this.image.width / this.image.height;
 
-        // Масштабируем изображение, чтобы оно заполняло экран
-        this.width = canvas.width; // Растягиваем ширину на весь экран
-        this.height = this.width / aspectRatio; // Высота рассчитывается с учётом пропорций
+        // Растягиваем изображение по ширине и сохраняем пропорции
+        this.width = canvas.width * this.scale;
+        this.height = this.width / aspectRatio;
 
-        // Если изображение по высоте меньше экрана, растягиваем по высоте
+        // Если высота изображения меньше высоты холста, растягиваем его
         if (this.height < canvas.height) {
-            this.height = canvas.height; // Растягиваем высоту на весь экран
-            this.width = this.height * aspectRatio; // Ширина сохраняет пропорции
+            this.height = canvas.height;
+            this.width = this.height * aspectRatio;
         }
 
-        // Учитываем вертикальное смещение слоя
-        this.y = y;
+        // Применяем вертикальное смещение
+        this.y = (canvas.height - this.height) / 2;
     }
 
     // Метод отрисовки слоя
@@ -49,33 +63,21 @@ class Layer {
 
     // Метод обновления положения слоя
     update() {
-        this.x -= this.speedModifier; // Перемещаем слой влево
+        this.x -= this.speedModifier;
         if (this.x <= -this.width) {
-            this.x = 0; // Сбрасываем позицию для бесконечного движения
+            this.x = 0; // Сброс позиции для бесконечного движения
         }
     }
 }
 
-// Создание слоёв с корректным масштабированием и вертикальным положением
+// Создание слоёв
 const layers = [
-    new Layer("assets/nightwalk bg mid.png", 1, 1, 0), // Передний слой
-    new Layer("assets/nightwalk bg forest.png", 0.5, 1, 0), // Средний слой
-    new Layer("assets/nightwalk bg 1 low.png", 0.2, 1, 0) // Задний слой
+    new Layer("assets/nightwalk bg mid.png", 1, 1), // Передний слой
+    new Layer("assets/nightwalk bg forest.png", 0.5, 1), // Средний слой
+    new Layer("assets/nightwalk bg 1 low.png", 0.2, 1) // Задний слой
 ];
 
-// Обновление размеров холста
-function resizeCanvas() {
-    canvas.width = window.innerWidth; 
-    canvas.height = window.innerHeight; 
-    layers.forEach(layer => layer.resizeLayer()); // Перерасчёт размеров слоёв
-    console.log(`Canvas resized: ${canvas.width}x${canvas.height}`);
-}
-resizeCanvas();
-
-// Обработчик изменения размеров окна
-window.addEventListener("resize", resizeCanvas);
-
-// Функция для обновления и отрисовки слоёв
+// Обновление и отрисовка слоёв
 function updateLayers() {
     layers.forEach(layer => {
         layer.update();
@@ -87,7 +89,7 @@ function updateLayers() {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем холст
     updateLayers();
-    requestAnimationFrame(gameLoop); // Следующий кадр
+    requestAnimationFrame(gameLoop);
 }
 
 // Запуск игрового цикла
