@@ -16,7 +16,6 @@ window.addEventListener("resize", () => {
     layers.forEach(layer => layer.resizeLayer());
 });
 
-// Класс слоя
 class Layer {
     constructor(imagePath, speedModifier, scale = 1, y = 0) {
         this.image = new Image();
@@ -24,11 +23,11 @@ class Layer {
         this.speedModifier = speedModifier; // Скорость движения слоя
         this.scale = scale; // Масштаб слоя
         this.y = y; // Вертикальная позиция слоя
-        this.x = 0; // Начальная горизонтальная позиция слоя
-        this.width = 0; // Ширина слоя
-        this.height = 0; // Высота слоя
+        this.x = 0; // Горизонтальная позиция слоя
+        this.width = 0; // Ширина слоя (изменяется с учётом масштаба)
+        this.height = 0; // Высота слоя (изменяется с учётом масштаба)
 
-        // Проверка загрузки изображения
+        // Загрузка изображения и масштабирование
         this.image.onload = () => {
             this.resizeLayer();
             console.log(`Image loaded: ${imagePath}`);
@@ -38,26 +37,18 @@ class Layer {
         };
     }
 
-    // Метод для масштабирования слоя и адаптации под размер экрана
+    // Метод для масштабирования слоя
     resizeLayer() {
         const aspectRatio = this.image.width / this.image.height;
 
-        // Если ширина холста больше по пропорции, чем изображение
-        if (canvas.width / canvas.height > aspectRatio) {
-            this.width = canvas.width;
-            this.height = canvas.width / aspectRatio;
-        } else {
-            this.height = canvas.height;
-            this.width = canvas.height * aspectRatio;
-        }
-
-        console.log(`Layer resized to: ${this.width}x${this.height}`);
+        // Масштабируем ширину и высоту с учётом `scale`
+        this.width = canvas.width * this.scale; // Масштабируем относительно холста
+        this.height = this.width / aspectRatio; // Высота сохраняет пропорции
     }
 
     // Метод отрисовки слоя
     draw() {
         if (this.image.complete && this.image.naturalWidth > 0) {
-            // Отрисовываем слой с учётом вертикального смещения
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
             ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
         } else {
@@ -73,6 +64,7 @@ class Layer {
         }
     }
 }
+
 
 // Создание слоёв
 const layers = [
