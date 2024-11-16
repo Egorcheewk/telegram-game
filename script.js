@@ -55,9 +55,10 @@ class Layer {
 // Создание слоёв
 const layers = [
     
-    new Layer("assets/nightwalk bg 1 low.png", 0.2, 1, 0), // Задний слой
+    
     new Layer("assets/nightwalk bg mid.png", 1, 1.3, -100) // Передний слой
     new Layer("assets/nightwalk bg forest.png", 0.5, 1.1, 0), // Средний слой
+    new Layer("assets/nightwalk bg 1 low.png", 0.2, 1, 0), // Задний слой
 ];
 
 // Главный игровой цикл
