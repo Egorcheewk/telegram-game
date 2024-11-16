@@ -13,25 +13,46 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 class Layer {
-    constructor(imagePath, speedModifier, scale = 1, y = 0) {
+    constructor(imagePath, speedModifier, y = 0, scale = 1) {
         this.image = new Image();
-        this.image.src = imagePath; // Путь к изображению
-        this.speedModifier = speedModifier; // Скорость слоя
-        this.scale = scale; // Масштаб слоя
-        this.y = y; // Вертикальное положение слоя
-        this.x = 0; // Горизонтальное положение слоя
-        this.width = 0; // Ширина слоя
-        this.height = 0; // Высота слоя
+        this.image.src = imagePath;
+        this.speedModifier = speedModifier;
+        this.scale = scale;
+        this.y = y; // Устанавливаем вертикальную позицию слоя
+        this.x = 0;
+        this.width = 0;
+        this.height = 0;
 
-        // Загружаем изображение и обрабатываем ошибки
         this.image.onload = () => {
-            console.log(`Image successfully loaded: ${imagePath}`);
-            this.resizeLayer();
-        };
-        this.image.onerror = () => {
-            console.error(`Failed to load image: ${imagePath}`);
+            this.width = this.image.width * this.scale; // Рассчитываем ширину с учётом масштаба
+            this.height = this.image.height * this.scale; // Рассчитываем высоту с учётом масштаба
         };
     }
+
+    draw(ctx) {
+        // Проверяем, загружено ли изображение
+        if (!this.width || !this.height) return;
+
+        // Отрисовка изображения
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+
+        // Рисуем повторяющееся изображение для плавного перехода
+        ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
+    }
+
+    update() {
+        this.x -= this.speedModifier; // Движение слоя влево
+        if (this.x <= -this.width) {
+            this.x = 0; // Сбрасываем позицию для бесконечного эффекта
+        }
+    }
+
+    // Метод для установки вертикального положения
+    setY(newY) {
+        this.y = newY;
+    }
+}
+
 
     // Метод масштабирования слоя
     resizeLayer() {
