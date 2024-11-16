@@ -69,7 +69,7 @@ canvas.height = 600; // Высота холста
 
 // Создание слоёв с вашими изображениями
 const layers = [
-    new Layer("assets/nightwalk bg 1 low.png", 0.2, 1, 400), // Нижний слой
+    new Layer("assets/nightwalk bg 1 low.png", 0.2, 1, 300), // Нижний слой
     new Layer("assets/nightwalk bg forest.png", 0.5, 1, 200), // Средний слой
     new Layer("assets/nightwalk bg mid.png", 1, 1, 0) // Верхний слой
 ];
