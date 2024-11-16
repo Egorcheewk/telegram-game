@@ -3,7 +3,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = 800; // Ширина холста
-canvas.height = 600; // Высота холста
+canvas.height = 630; // Высота холста
 
 // Класс для создания слоя заднего фона
 class Layer {
@@ -56,7 +56,7 @@ class Layer {
 const layers = [
     new Layer("assets/nightwalk bg 1 low.png", 0.2, 1, 0), // Задний слой
     new Layer("assets/nightwalk bg forest.png", 0.5, 1.1, 0), // Средний слой
-    new Layer("assets/nightwalk bg mid.png", 1, 1.3, 0) // Передний слой
+    new Layer("assets/nightwalk bg mid.png", 1, 1.3, -20) // Передний слой
 ];
 
 // Главный игровой цикл
